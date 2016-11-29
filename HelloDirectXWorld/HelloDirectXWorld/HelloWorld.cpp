@@ -20,17 +20,31 @@ public:
 	virtual void Initialize(CoreApplicationView^ appView)
 	{
 		//subscriube the OnActivated function to handle the Activated 'event'
-		appView->Activated += ref new TypedEventHandler<Windows::ApplicationModel::Core::CoreApplicationView ^, Windows::ApplicationModel::Activation::IActivatedEventArgs ^>(this, &HelloWorld::OnActivated);
+		appView->Activated += ref new TypedEventHandler<CoreApplicationView ^, IActivatedEventArgs ^>(this, &HelloWorld::OnActivated);
 	}
 
 	virtual void SetWindow(CoreWindow^ Window){}
 	virtual void Load(String^EntryPoint){}
-	virtual void Run() {}
+	
+	virtual void Run() 
+	{
+		//Obtained a pointer to the window
+		CoreWindow^ Window = CoreWindow::GetForCurrentThread();
+
+		//run ProcessEvents() to dispatch events
+		Window->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessUntilQuit);
+
+	}
+	
 	virtual void Uninitialize() {}
 
 	//An event that is called when the application windows is ready to be activated
-	void OnActivated(CoreApplicationView ^sender, IActivatedEventArgs ^args){
+	void OnActivated(CoreApplicationView^ sender, IActivatedEventArgs^ args)
+	{
+		//obtain a pointer to the window
 		CoreWindow^ Window = CoreWindow::GetForCurrentThread();
+
+		//activate the window
 		Window->Activate();
 	}
 };
