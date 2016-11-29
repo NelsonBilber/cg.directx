@@ -8,7 +8,7 @@ Was based on Udemy course - <i>"DirectX - Learn Microsoft DirectX from Scratch"<
 * Base Window Skeleton for DirectX Window
 <br/>
 <br/>
-<p>__Requisites__</p>
+<p><u>Requisites</u></p>
 * Visual Studio 2015 Community Edition
 * Windows 10
 * DirectX 11
