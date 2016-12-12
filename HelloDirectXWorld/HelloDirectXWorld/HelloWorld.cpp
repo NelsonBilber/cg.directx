@@ -27,6 +27,7 @@ public:
 	{
 		//tell windows to precess this kind os events
 		Window->PointerPressed += ref new TypedEventHandler<CoreWindow ^, PointerEventArgs ^>(this, &HelloWorld::PointerPressed);
+		Window->PointerWheelChanged += ref new TypedEventHandler<CoreWindow ^, PointerEventArgs ^>(this, &HelloWorld::OnPointerWheelChanged);
 		Window->KeyDown        += ref new TypedEventHandler<CoreWindow ^,KeyEventArgs ^>(this, &HelloWorld::OnKeyDown);
 	}
 
@@ -89,6 +90,17 @@ public:
 			Dialog.Content = "Strafe Back";
 			Dialog.Title = "S pressed";
 		}
+
+		Dialog.ShowAsync();
+	}
+	
+	//deal with wheel events
+	void OnPointerWheelChanged(CoreWindow ^Sender, PointerEventArgs ^Args)
+	{
+		int wheel = Args->CurrentPoint->Properties->MouseWheelDelta;
+		MessageDialog Dialog("", "");
+		Dialog.Content = wheel.ToString();
+		Dialog.Title = "Notice!";
 
 		Dialog.ShowAsync();
 	}
