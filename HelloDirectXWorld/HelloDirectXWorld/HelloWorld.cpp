@@ -23,8 +23,14 @@ public:
 		appView->Activated += ref new TypedEventHandler<CoreApplicationView ^, IActivatedEventArgs ^>(this, &HelloWorld::OnActivated);
 	}
 
-	virtual void SetWindow(CoreWindow^ Window){}
-	virtual void Load(String^EntryPoint){}
+	virtual void SetWindow(CoreWindow^ Window)
+	{
+		//tell windows to precess this kind os events
+		Window->PointerPressed += ref new TypedEventHandler<CoreWindow ^, PointerEventArgs ^>(this, &HelloWorld::PointerPressed);
+		Window->KeyDown        += ref new TypedEventHandler<CoreWindow ^,KeyEventArgs ^>(this, &HelloWorld::OnKeyDown);
+	}
+
+	virtual void Load(String^ EntryPoint){}
 	
 	virtual void Run() 
 	{
@@ -46,6 +52,45 @@ public:
 
 		//activate the window
 		Window->Activate();
+	}
+
+	//input event handlers
+	void PointerPressed(CoreWindow^ Window, PointerEventArgs^ Args) 
+	{
+		auto point = Args->CurrentPoint;
+		MessageDialog Dialog("","");
+		Dialog.Content = "X :" + Args->CurrentPoint->Position.X.ToString() + " " + " Y : " + Args->CurrentPoint->Position.Y.ToString();
+		Dialog.Title = "Notice!";
+		
+		Dialog.ShowAsync();
+	}
+
+	//deal with keyboards events
+	void OnKeyDown(CoreWindow^ Window, KeyEventArgs^ Args)
+	{
+		MessageDialog Dialog("", "");
+		if (Args->VirtualKey == VirtualKey::W)
+		{
+			Dialog.Content = "Move Forward";
+			Dialog.Title = "W pressed";
+		}
+		else if (Args->VirtualKey == VirtualKey::A)
+		{
+			Dialog.Content = "Strafe left";
+			Dialog.Title = "A pressed";
+		}
+		else if (Args->VirtualKey == VirtualKey::D)
+		{
+			Dialog.Content = "Strafe Right";
+			Dialog.Title = "D pressed";
+		}
+		else if (Args->VirtualKey == VirtualKey::S)
+		{
+			Dialog.Content = "Strafe Back";
+			Dialog.Title = "S pressed";
+		}
+
+		Dialog.ShowAsync();
 	}
 };
 
