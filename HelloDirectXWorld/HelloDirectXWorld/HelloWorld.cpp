@@ -15,20 +15,27 @@ using namespace Platform;
 //class definition for the core framework of the app
 ref class HelloWorld sealed : public IFrameworkView
 {
+	bool didCloseWindow; //change this to true when it's time to shutdown the window
 public:
 	//functions called by Windows
 	virtual void Initialize(CoreApplicationView^ appView)
 	{
 		//subscriube the OnActivated function to handle the Activated 'event'
 		appView->Activated += ref new TypedEventHandler<CoreApplicationView ^, IActivatedEventArgs ^>(this, &HelloWorld::OnActivated);
+
+		didCloseWindow = false;
+
+		CoreApplication::Suspending += ref new EventHandler<SuspendingEventArgs ^>(this, &HelloWorld::OnSuspending);
+		CoreApplication::Resuming	+= ref new EventHandler<Platform::Object ^>(this, &HelloWorld::OnResuming);
 	}
 
 	virtual void SetWindow(CoreWindow^ Window)
 	{
 		//tell windows to precess this kind os events
-		Window->PointerPressed += ref new TypedEventHandler<CoreWindow ^, PointerEventArgs ^>(this, &HelloWorld::PointerPressed);
+		Window->PointerPressed		+= ref new TypedEventHandler<CoreWindow ^, PointerEventArgs ^>(this, &HelloWorld::PointerPressed);
 		Window->PointerWheelChanged += ref new TypedEventHandler<CoreWindow ^, PointerEventArgs ^>(this, &HelloWorld::OnPointerWheelChanged);
-		Window->KeyDown        += ref new TypedEventHandler<CoreWindow ^,KeyEventArgs ^>(this, &HelloWorld::OnKeyDown);
+		Window->KeyDown				+= ref new TypedEventHandler<CoreWindow ^,KeyEventArgs ^>(this, &HelloWorld::OnKeyDown);
+		Window->Closed				+= ref new TypedEventHandler<CoreWindow ^, CoreWindowEventArgs ^>(this, &HelloWorld::OnClosed);
 	}
 
 	virtual void Load(String^ EntryPoint){}
@@ -38,9 +45,12 @@ public:
 		//Obtained a pointer to the window
 		CoreWindow^ Window = CoreWindow::GetForCurrentThread();
 
-		//run ProcessEvents() to dispatch events
-		Window->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessUntilQuit);
-
+		//repeat until widow shuts down
+		while (!didCloseWindow)
+		{
+			//run ProcessEvents() to dispatch events
+			Window->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
+		}
 	}
 	
 	virtual void Uninitialize() {}
@@ -104,6 +114,22 @@ public:
 
 		Dialog.ShowAsync();
 	}
+
+	void OnSuspending(Object ^sender, SuspendingEventArgs ^args)
+	{
+		//throw ref new Platform::NotImplementedException();
+	}
+
+	void OnResuming(Object ^sender, Object ^args)
+	{
+		//throw ref new Platform::NotImplementedException();
+	}
+
+	void OnClosed(CoreWindow ^sender, CoreWindowEventArgs ^args)
+	{
+		didCloseWindow = true;
+	}
+
 };
 
 //The class definition that creates and instance of our core framework class
@@ -125,3 +151,4 @@ int main(Array<String^>^ args)
 	CoreApplication::Run(ref new AppSource());
 	return 0;
 }
+
