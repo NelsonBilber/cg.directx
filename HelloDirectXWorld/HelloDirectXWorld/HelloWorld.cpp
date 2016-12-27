@@ -1,5 +1,6 @@
 // precompiled headers
 #include "pch.h"
+#include "Game.h"
 
 //include common namespaces namesapces for code simplification
 using namespace Windows::ApplicationModel;
@@ -16,6 +17,7 @@ using namespace Platform;
 ref class HelloWorld sealed : public IFrameworkView
 {
 	bool didCloseWindow; //change this to true when it's time to shutdown the window
+	CGame Game;
 public:
 	//functions called by Windows
 	virtual void Initialize(CoreApplicationView^ appView)
@@ -42,6 +44,7 @@ public:
 	
 	virtual void Run() 
 	{
+		Game.Initialize();
 		//Obtained a pointer to the window
 		CoreWindow^ Window = CoreWindow::GetForCurrentThread();
 
@@ -50,6 +53,10 @@ public:
 		{
 			//run ProcessEvents() to dispatch events
 			Window->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessAllIfPresent);
+
+			//calling update update and render repeatedly
+			Game.Update();
+			Game.Render();
 		}
 	}
 	
