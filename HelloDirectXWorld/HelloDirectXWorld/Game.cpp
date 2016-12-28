@@ -7,6 +7,10 @@ using namespace std;
 // initalize and prepares 3D
 void CGame::Initialize()
 {
+	/*==================================*/
+	// Swap Chains - setup
+	/*==================================*/
+
 	//define temp pointer to the game
 	ComPtr<ID3D11Device> tempDevice;
 	ComPtr<ID3D11DeviceContext> tempDeviceContext;
@@ -52,19 +56,15 @@ void CGame::Initialize()
 
 	//Create swap chain
 	CoreWindow^ Window = CoreWindow::GetForCurrentThread(); //obtain a pointer to the window
-
-	if (!Window)
-	{
+	if (!Window){
 		cout <<"Can´t get window ..."<< endl;
 	}
 
-	if (!device)
-	{
+	if (!device) {
 		cout << "Can´t get device ..." << endl;
 	}
 
-	dxgiFactory->CreateSwapChainForCoreWindow
-	(	
+	dxgiFactory->CreateSwapChainForCoreWindow (	
 		device.Get(),							//address of the device
 		reinterpret_cast<IUnknown *>(Window),	//address if the window
 		&swapChainDescription,					//address of the swap chain description
@@ -72,10 +72,22 @@ void CGame::Initialize()
 		&swapChain								//
 	);
 
-	if (!swapChain)
-	{
+	if (!swapChain) {
 		cout << "Error creating swap chain ... " << endl;
 	}
+
+
+
+	/*==================================*/
+	// Render frames
+	/*==================================*/
+
+	//Get a pointer to the back buffer
+	ComPtr<ID3D11Texture2D> backBuffer;
+	swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), &backBuffer);
+
+	//create a render target that points to our backbuffer
+	device->CreateRenderTargetView(backBuffer.Get(), nullptr, &renderTarget);
 
 }
 
@@ -87,13 +99,17 @@ void CGame::Update()
 // renders a simple frame of 3D graphics
 void CGame::Render()
 {
-	if (swapChain)
-	{
+	if (swapChain) {
+		//set new render target as the active render target
+		deviceContext->OMSetRenderTargets(1, renderTarget.GetAddressOf(), nullptr);
+
+		//clear the back buffer to some colour
+		float colour[4] = {0.2f, 0.5f, 0.3f, 1.0f};
+		deviceContext->ClearRenderTargetView(renderTarget.Get(), colour);
+
 		//switch the back buffer and the front buffer
 		swapChain->Present(1, 0);
-	}
-	else
-	{
-		cout <<" No swapChain ..... "<< endl;
+	} else {
+		cout <<" No swap chain ..... "<< endl;
 	}
 }
