@@ -53,4 +53,8 @@
   <ItemGroup>
     <None Include="HelloDirectXWorld_TemporaryKey.pfx" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PixelShader.hlsl" />
+    <FxCompile Include="VertexShader.hlsl" />
+  </ItemGroup>
 </Project>
