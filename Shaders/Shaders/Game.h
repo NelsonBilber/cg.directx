@@ -12,6 +12,7 @@ using namespace DirectX;
 struct VERTEX
 {
 	float X, Y, Z;    // vertex position
+	float R, G, B;    // color values
 };
 
 

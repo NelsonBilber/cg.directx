@@ -172,9 +172,9 @@ void CGame::InitGraphics()
 	// create a triangle out of vertices
 	VERTEX OurVertices[] =
 	{
-		{ 0.0f, 0.5f, 0.0f },
-		{ 0.45f, -0.5f, 0.0f },
-		{ -0.45f, -0.5f, 0.0f },
+		{ 0.00f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f }, //full red
+		{ 0.45f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f }, //full green
+ 		{ -0.45f,-0.5f, 0.0f,    0.0f, 0.0f, 1.0f }, //full blue
 	};
 
 	// create the vertex buffer
@@ -206,6 +206,7 @@ void CGame::InitPipeline()
 	D3D11_INPUT_ELEMENT_DESC ied[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	// create and set the input layout
