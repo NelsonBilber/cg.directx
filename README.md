@@ -12,7 +12,7 @@ Was based on Udemy course - <i>"DirectX - Learn Microsoft DirectX from Scratch"<
 
 <p>In order to see the source code evolution follow git TAG's</p>
 
-<b>HelloDirectXWorld</b>
+<b>HelloDirectXWorld (Triangle Example)</b>
 * Base Window Skeleton for DirectX Window
 * Mouse events
 * Pipeline to build a triangle  
@@ -23,7 +23,7 @@ Was based on Udemy course - <i>"DirectX - Learn Microsoft DirectX from Scratch"<
 
 
 <b>3D Transformations</b>
-*
+* in progress ....
 
 <br/>
 <br/>
