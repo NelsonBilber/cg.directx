@@ -172,9 +172,9 @@ void CGame::InitGraphics()
 	// create a triangle out of vertices
 	VERTEX OurVertices[] =
 	{
-		{ 0.0f, 0.5f, 0.0f },
-		{ 0.45f, -0.5f, 0.0f },
-		{ -0.45f, -0.5f, 0.0f },
+		{ 0.0f, 1.0f, 0.0f },
+		{ 1.f, -1.f, 0.0f },
+		{ -1.f, -1.f, 0.0f },
 	};
 
 	// create the vertex buffer
