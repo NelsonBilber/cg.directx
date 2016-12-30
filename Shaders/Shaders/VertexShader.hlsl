@@ -14,12 +14,26 @@ VOut main( float4 position : POSITION, float4 color: COLOR )
 	output.position = position;
 	output.color = color;
 
+	//EXAMPLES OF SHADERS EFFECTS !!!
+
+	//ex1 - invert colors
+	//output.color = 1.0f - color;
+
+	//ex2: hot colors
+	//output.color = color; 
+	//output.color.r = 1.0f;
+
+	//ex3. shrink effect
+	//output.position.xy *= 0.7f; //shrink the vertices on the X and the Y axes
+	//output.color = color;
+
 	return output;
 }
 
 
 /* HLSL
 
+========================================================
 Types of variables in Hight Level Shader Language (HLSL)
 ========================================================
 
@@ -33,7 +47,7 @@ float4 ex: float4  = {0.1f,0.1f,0.1f,0.1f }
 float4x4 temp
 
 
-
+========
 Symatics
 ========
 
