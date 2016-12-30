@@ -8,14 +8,6 @@ using namespace Windows::UI::Core;
 using namespace Platform;
 using namespace DirectX;
 
-// a struct to represent a single vertex
-struct VERTEX
-{
-	float X, Y, Z;    // vertex position
-	float R, G, B;    // color values
-};
-
-
 class CGame
 {
 public:
@@ -32,6 +24,20 @@ public:
 	ComPtr<ID3D11VertexShader> vertexShader;        // the vertex shader interface
 	ComPtr<ID3D11PixelShader> pixelShader;          // the pixel shader interface
 	ComPtr<ID3D11InputLayout> inputLayout;          // the input layout interface
+	ComPtr<ID3D11Buffer> constantBuffer;
+
+	// a struct to represent a single vertex
+	struct VERTEX
+	{
+		float X, Y, Z;    // vertex position
+		float R, G, B;    // color values
+	};
+
+	struct OFFSET
+	{
+		float X, Y, Z;
+	};
+
 
 	void Initialize(); // starting up code
 	void Update(); // code tha manipulates the game sucj as timer an input
