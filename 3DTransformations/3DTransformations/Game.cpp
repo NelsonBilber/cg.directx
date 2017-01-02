@@ -101,8 +101,6 @@ void CGame::Initialize()
 		cout << "Error creating swap chain ... " << endl;
 	}
 
-
-
 	/*==================================*/
 	// Render frames
 	/*==================================*/
@@ -130,11 +128,13 @@ void CGame::Initialize()
 	
 	InitPipeline();
 
+	time = 0.0f;
 }
 
 // performs updates to the game state
 void CGame::Update()
 {
+	time += 0.05f;
 }
 
 // renders a simple frame of 3D graphics
@@ -160,13 +160,37 @@ void CGame::Render()
 		deviceContext->Draw(3, 0);
 
 		OFFSET Offset;
-		Offset.X = 0.5f;
+		/*Offset.X = 0.5f;
 		Offset.Y = 0.2f;
-		Offset.Z = 0.7f;
+		Offset.Z = 0.7f;*/
 
-		// set the new values for the constant buffer
-		deviceContext->UpdateSubresource(constantBuffer.Get(), 0 , 0, &Offset, 0, 0);
+		/*==================================*/
+		// Transformations
+		/*==================================*/
+		//claculate world transformation
+		XMMATRIX matWorld = XMMatrixRotationY(time); 
+		
+		//Calculate the view transformation
+		XMVECTOR camPosition = XMVectorSet(1.5f, 0.5f, 1.5f, 0.0f);
+		XMVECTOR camLookAt = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+		XMVECTOR camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		XMMATRIX matView = XMMatrixLookAtLH(camPosition, camLookAt, camUp);
 
+		//calculate the projection transformation
+		CoreWindow ^Window = CoreWindow::GetForCurrentThread();
+		XMMATRIX matProjection = XMMatrixPerspectiveFovLH(
+			XMConvertToRadians(45.0f), 
+			(FLOAT)Window->Bounds.Width / (FLOAT)Window->Bounds.Height, 
+			1.0f, 
+			100.0f
+		);
+
+		//calculate the final matrix
+		XMMATRIX matFinal = matWorld * matView * matProjection;
+
+		// load the data into constant buffer
+		deviceContext->UpdateSubresource(constantBuffer.Get(), 0 , 0, &matFinal, 0, 0);
+		deviceContext->Draw(3, 0);
 		//switch the back buffer and the front buffer
 		swapChain->Present(1, 0);
 	} else {
@@ -224,7 +248,7 @@ void CGame::InitPipeline()
 	//Create a constant buffer
 	D3D11_BUFFER_DESC bufferDesc = { 0 };
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = 16;
+	bufferDesc.ByteWidth = 64;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	device->CreateBuffer(&bufferDesc, nullptr, &constantBuffer);

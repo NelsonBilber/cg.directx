@@ -45,4 +45,6 @@ public:
 
 	void InitGraphics();
 	void InitPipeline();
+
+	float time;
 };

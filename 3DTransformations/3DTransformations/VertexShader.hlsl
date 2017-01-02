@@ -1,6 +1,6 @@
 cbuffer ConstantBuffer
 {
-	float3 OffsetAnotherValue;
+	float4x4 matFinal;
 };
 
 struct VOut 
@@ -13,8 +13,8 @@ VOut main( float4 position : POSITION, float4 color: COLOR )
 {
 	VOut output;
 	
-	output.position    = position;
-	output.color = color;
+	output.position  = mul(matFinal,position); // render the final 2d vector on the screen
+	output.color	 = color;
 
 	return output;
 }
