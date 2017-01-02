@@ -25,6 +25,7 @@ public:
 	ComPtr<ID3D11PixelShader> pixelShader;          // the pixel shader interface
 	ComPtr<ID3D11InputLayout> inputLayout;          // the input layout interface
 	ComPtr<ID3D11Buffer> constantBuffer;
+	ComPtr<ID3D11DepthStencilView> zBuffer;
 
 	// a struct to represent a single vertex
 	struct VERTEX
