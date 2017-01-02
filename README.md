@@ -23,6 +23,9 @@ Was based on Udemy course - <i>"DirectX - Learn Microsoft DirectX from Scratch"<
 
 
 <b>3D Transformations</b>
+* World View Transformation
+
+<b>Depth Buffer</b>
 * in progress ....
 
 <br/>
