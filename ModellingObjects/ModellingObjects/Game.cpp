@@ -181,35 +181,26 @@ void CGame::Render()
 		UINT stride = sizeof(VERTEX);
 		UINT offset = 0;
 		deviceContext->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
+		deviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
 
 		// set the primitive topology
 		deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		// draw 3 vertices, starting from vertex 0
-		deviceContext->Draw(3, 0);
+		deviceContext->Draw(36, 0);
 
 
 		/*==================================*/
 		// Transformations
 		/*==================================*/
 		//claculate world transformation
-		XMMATRIX matRotate[4];
-		matRotate[0] = XMMatrixRotationY(time);
-		matRotate[1] = XMMatrixRotationY(time + 3.15159f);
-		matRotate[2] = XMMatrixRotationY(time);
-		matRotate[3] = XMMatrixRotationY(time + 3.15159f);
+		XMMATRIX matRotate = XMMatrixRotationY(time);
 
-		XMMATRIX matTranslate[4];
-		matTranslate[0] = XMMatrixTranslation(0.0f, 0.0f, 0.5f);
-		matTranslate[1] = XMMatrixTranslation(0.0f, 0.0f, 0.5f);
-		matTranslate[2] = XMMatrixTranslation(0.0f, 0.0f, -0.5f);
-		matTranslate[3] = XMMatrixTranslation(0.0f, 0.0f, -0.5f);
-		
 		//Calculate the view transformation
-		XMVECTOR camPosition = XMVectorSet(1.5f, 0.5f, 1.5f, 0.0f);
+		XMVECTOR camPosition = XMVectorSet(1.5f, 9.5f,15.0f, 0.0f);
 		XMVECTOR camLookAt = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-		XMVECTOR camUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-		XMMATRIX matView = XMMatrixLookAtLH(camPosition, camLookAt, camUp);
+		XMVECTOR camUp =     XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+		XMMATRIX matView =   XMMatrixLookAtLH(camPosition, camLookAt, camUp);
 
 		//calculate the projection transformation
 		CoreWindow ^Window = CoreWindow::GetForCurrentThread();
@@ -221,21 +212,11 @@ void CGame::Render()
 		);
 
 		//calculate the final matrix
-		XMMATRIX matFinal[4];
-		matFinal[0] = matTranslate[0] * matRotate[0] * matView * matProjection;
-		matFinal[1] = matTranslate[1] * matRotate[1] * matView * matProjection;
-		matFinal[2] = matTranslate[2] * matRotate[2] * matView * matProjection;
-		matFinal[3] = matTranslate[3] * matRotate[3] * matView * matProjection;
+		XMMATRIX matFinal = matRotate * matView * matProjection;
 
 		// load the data into constant buffer
-		deviceContext->UpdateSubresource(constantBuffer.Get(), 0, 0, &matFinal[0], 0, 0);
-		deviceContext->Draw(3, 0);
-		deviceContext->UpdateSubresource(constantBuffer.Get(), 0, 0, &matFinal[1], 0, 0);
-		deviceContext->Draw(3, 0);
-		deviceContext->UpdateSubresource(constantBuffer.Get(), 0, 0, &matFinal[2], 0, 0);
-		deviceContext->Draw(3, 0);
-		deviceContext->UpdateSubresource(constantBuffer.Get(), 0, 0, &matFinal[3], 0, 0);
-		deviceContext->Draw(3, 0);
+		deviceContext->UpdateSubresource(constantBuffer.Get(), 0, 0, &matFinal, 0, 0);
+		deviceContext->DrawIndexed(18, 0, 0);
 
 		swapChain->Present(1, 0);
 
@@ -250,9 +231,14 @@ void CGame::InitGraphics()
 	// create a triangle out of vertices
 	VERTEX OurVertices[] =
 	{
-		{ 0.00f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f }, //full red
-		{ 0.45f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f }, //full green
- 		{ -0.45f,-0.5f, 0.0f,    0.0f, 0.0f, 1.0f }, //full blue
+		//base
+		{ -1.0f, -1.0f, 1.0f,  0.0f, 1.0f, 0.0f },  //0
+		{ 1.0f,  -1.0f, 1.0f,  0.0f, 0.0f, 1.0f },  //1
+ 		{ -1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f },  //2
+		{ 1.0f,  -1.0f, -1.0f, 0.0f, 1.0f, 1.0f },  //3
+
+		//top
+		{ 0.0f, 1.0f,  0.0f,  0.0f, 1.0f, 0.0f },  //4
 	};
 
 	// create the vertex buffer
@@ -263,6 +249,24 @@ void CGame::InitGraphics()
 	D3D11_SUBRESOURCE_DATA srd = { OurVertices, 0, 0 };
 
 	device->CreateBuffer(&bd, &srd, &vertexBuffer);
+
+	short OurIndices[]
+	{
+		0,2,1, // base
+		1,2,3,
+		0,1,4, //sides
+		1,3,4,
+		3,2,4,
+		2,0,4,
+	};
+
+	//create the index buffer
+	D3D11_BUFFER_DESC indexDesc = {0};
+	indexDesc.ByteWidth = sizeof(short) * ARRAYSIZE(OurIndices);
+	indexDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA subResourceDataIndices = {OurIndices, 0, 0};
+	device->CreateBuffer(&indexDesc, &subResourceDataIndices, &indexBuffer);
 }
 
 // this function initializes the GPU settings and prepares it for rendering
