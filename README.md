@@ -26,6 +26,10 @@ Was based on Udemy course - <i>"DirectX - Learn Microsoft DirectX from Scratch"<
 * World View Transformation
 
 <b>Depth Buffer</b>
+
+<b>Modelling Objects</b>
+
+<b>Costumizing Rasterizer</b>
 * in progress ....
 
 <br/>
