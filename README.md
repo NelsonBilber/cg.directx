@@ -30,7 +30,9 @@ Was based on Udemy course - <i>"DirectX - Learn Microsoft DirectX from Scratch"<
 <b>Modelling Objects</b>
 
 <b>Costumizing Rasterizer</b>
-* in progress ....
 
-<br/>
-<br/>
+<b>Color Blending</b>
+
+<b>Textures</b>
+
+<b>Quaternions</b>
