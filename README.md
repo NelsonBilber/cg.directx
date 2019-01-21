@@ -36,3 +36,9 @@ Was based on Udemy course - <i>"DirectX - Learn Microsoft DirectX from Scratch"<
 <b>Textures</b>
 
 <b>Quaternions</b>
+
+---
+ 
+### More examples about Computer Graphics
+
+[more](https://github.com/NelsonBilber/ComputerGraphics)
